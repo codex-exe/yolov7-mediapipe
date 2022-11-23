@@ -1,0 +1,6 @@
+train: "C:/Users/alabh/OneDrive/Desktop/project/labels/train"
+val: "C:/Users/alabh/OneDrive/Desktop/project/labels/validate"
+
+#Classes
+nc: 2
+names: ['lamp off', 'lamp on']

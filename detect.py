@@ -3,19 +3,58 @@ import time
 from pathlib import Path
 
 import cv2
+from sklearn import datasets
 import torch
 import torch.backends.cudnn as cudnn
 from numpy import random
-
+import requests
 from models.experimental import attempt_load
 from utils.datasets import LoadStreams, LoadImages
 from utils.general import check_img_size, check_requirements, check_imshow, non_max_suppression, apply_classifier, \
     scale_coords, xyxy2xywh, strip_optimizer, set_logging, increment_path
+from multiprocessing import Pool
+from multiprocessing import Process
 from utils.plots import plot_one_box
 from utils.torch_utils import select_device, load_classifier, time_synchronized, TracedModel
 
+import argparse
+import queue
+import sys
 
-def detect(save_img=False):
+
+def lineLine(x1, y1, x2, y2, x3, y3, x4, y4):
+    
+    #calculate the direction of the lines
+    uA = ((x4-x3)*(y1-y3) - (y4-y3)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1))
+    uB = ((x2-x1)*(y1-y3) - (y2-y1)*(x1-x3)) / ((y4-y3)*(x2-x1) - (x4-x3)*(y2-y1))
+
+    #if uA and uB are between 0-1, lines are colliding
+    if (uA >= 0 and uA <= 1 and uB >= 0 and uB <= 1) :
+        #optionally, draw a circle where the lines meet
+        intersectionX = x1 + (uA * (x2-x1))
+        intersectionY = y1 + (uA * (y2-y1))
+        return True
+    return False
+
+#LINE/RECTANGLE
+def lineRect(x1, y1, x2, y2, rx, ry, rw, rh):
+
+    #check if the line has hit any of the rectangle's sides
+    #uses the Line/Line function below
+    left =   lineLine(x1,y1,x2,y2, rx,ry,rx, ry+rh)
+    right =  lineLine(x1,y1,x2,y2, rx+rw,ry, rx+rw,ry+rh)
+    top =    lineLine(x1,y1,x2,y2, rx,ry, rx+rw,ry)
+    bottom = lineLine(x1,y1,x2,y2, rx,ry+rh, rx+rw,ry+rh)
+
+    #if ANY of the above are true, the line has hit the rectangle
+    if (left or right or top or bottom):
+        return True
+
+    return False
+
+
+def detect(save_img=False,words =''):
+    
     source, weights, view_img, save_txt, imgsz, trace = opt.source, opt.weights, opt.view_img, opt.save_txt, opt.img_size, not opt.no_trace
     save_img = not opt.nosave and not source.endswith('.txt')  # save inference images
     webcam = source.isnumeric() or source.endswith('.txt') or source.lower().startswith(
@@ -67,7 +106,7 @@ def detect(save_img=False):
     old_img_b = 1
 
     t0 = time.time()
-    for path, img, im0s, vid_cap in dataset:
+    for path, img, im0s, vid_cap, cordsl, cordsr in dataset:
         img = torch.from_numpy(img).to(device)
         img = img.half() if half else img.float()  # uint8 to fp16/32
         img /= 255.0  # 0 - 255 to 0.0 - 1.0
@@ -123,11 +162,61 @@ def detect(save_img=False):
                         line = (cls, *xywh, conf) if opt.save_conf else (cls, *xywh)  # label format
                         with open(txt_path + '.txt', 'a') as f:
                             f.write(('%g ' * len(line)).rstrip() % line + '\n')
-
+                        
                     if save_img or view_img:  # Add bbox to image
                         label = f'{names[int(cls)]} {conf:.2f}'
                         plot_one_box(xyxy, im0, label=label, color=colors[int(cls)], line_thickness=1)
+                        x1 = xyxy[0].item()
+                        y1 = xyxy[1].item()
+                        x2 = xyxy[2].item()
+                        y2 = xyxy[3].item()
 
+                        c1, c2 = (int(xyxy[0]), int(xyxy[1])), (int(xyxy[2]), int(xyxy[3]))
+
+                        x1l,y1l = cordsl[1]
+                        x2l=y2l=0
+
+                        x1r,y1r = cordsr[1]
+                        hit = lineRect(x1l,y1l,x2l,y2l, x1,y1,x2,y2)
+                        if (hit):
+                            cv2.rectangle(frame, c1,c2,(250,150,0),3)
+                            print(" Pointing", end = ", ")
+                            with open("words.txt", "r") as f:
+                                words = f.read().split(" ")
+                                f.close()
+                                words = words[:-1]
+                            print(words)
+                            if "on" in words:
+                                print(" Light is on",end = ", ")
+                                requests.get('http://192.168.96.117/LED=ON')
+                            elif "off" in words:
+                                print(" Light is off",end = ", ")
+                                requests.get('http://192.168.96.117/LED=OFF')
+                        else:
+                            cv2.rectangle(frame, c1,c2,(0,150,255),3)
+                            print(" Not Pointing", end = ", ")
+
+                        hit = lineRect(x1r,y1r,x2l,y2l, x1,y1,x2,y2)
+                        if (hit):
+                            cv2.rectangle(frame, c1,c2,(250,150,0),3)
+                            print(" Pointing", end = ", ")
+                            with open("words.txt", "r") as f:
+                                words = f.read().split(" ")
+                                f.close()
+                                words = words[:-1]
+                            print(words)
+
+                            if 'on' in words:
+                                print(" Light is on",end = ", ")
+                                requests.get('http://192.168.96.117/LED=ON')
+                            elif 'off' in words or "of" in words:
+                                print(" Light is off",end = ", ")
+                                requests.get('http://192.168.96.117/LED=OFF')
+                        else:
+                            cv2.rectangle(frame, c1,c2,(0,150,255),3)
+                            print(" Not Pointing", end = ", ")
+                        
+                        
             # Print time (inference + NMS)
             print(f'{s}Done. ({(1E3 * (t2 - t1)):.1f}ms) Inference, ({(1E3 * (t3 - t2)):.1f}ms) NMS')
 
@@ -162,11 +251,10 @@ def detect(save_img=False):
 
     print(f'Done. ({time.time() - t0:.3f}s)')
 
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--weights', nargs='+', type=str, default='yolov7.pt', help='model.pt path(s)')
-    parser.add_argument('--source', type=str, default='inference/images', help='source')  # file/folder, 0 for webcam
+    parser.add_argument('--weights', nargs='+', type=str, default='best.pt', help='model.pt path(s)')
+    parser.add_argument('--source', type=str, default='0', help='source')  # file/folder, 0 for webcam
     parser.add_argument('--img-size', type=int, default=640, help='inference size (pixels)')
     parser.add_argument('--conf-thres', type=float, default=0.25, help='object confidence threshold')
     parser.add_argument('--iou-thres', type=float, default=0.45, help='IOU threshold for NMS')
@@ -186,7 +274,8 @@ if __name__ == '__main__':
     opt = parser.parse_args()
     print(opt)
     #check_requirements(exclude=('pycocotools', 'thop'))
-
+    
+   
     with torch.no_grad():
         if opt.update:  # update all models (to fix SourceChangeWarning)
             for opt.weights in ['yolov7.pt']:
@@ -194,3 +283,4 @@ if __name__ == '__main__':
                 strip_optimizer(opt.weights)
         else:
             detect()
+    

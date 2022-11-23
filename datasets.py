@@ -1,4 +1,4 @@
-# Dataset utils and dataloaders
+# ORIGNAL Dataset utils and dataloaders
 
 import glob
 import logging
@@ -29,20 +29,6 @@ from torchvision.ops import roi_pool, roi_align, ps_roi_pool, ps_roi_align
 from utils.general import check_requirements, xyxy2xywh, xywh2xyxy, xywhn2xyxy, xyn2xy, segment2box, segments2boxes, \
     resample_segments, clean_str
 from utils.torch_utils import torch_distributed_zero_first
-
-import mediapipe as mp
-
-pose = mp.solutions.pose.Pose(static_image_mode=False, enable_segmentation=False, smooth_segmentation=True, min_detection_confidence=0.5, min_tracking_confidence=0.5)
-mpDraw=mp.solutions.drawing_utils
-
-handRadius=20
-handColor=(0,0,255)
-handThickness=4
-
-width=1280
-height=720
-
-points = (width,height)
 
 # Parameters
 help_url = 'https://github.com/ultralytics/yolov5/wiki/Train-Custom-Data'
@@ -282,8 +268,6 @@ class LoadStreams:  # multiple IP or RTSP cameras
         self.mode = 'stream'
         self.img_size = img_size
         self.stride = stride
-        self.cordsr = []
-        self.cordsl = []
 
         if os.path.isfile(sources):
             with open(sources, 'r') as f:
@@ -326,48 +310,11 @@ class LoadStreams:  # multiple IP or RTSP cameras
         while cap.isOpened():
             n += 1
             # _, self.imgs[index] = cap.read()
-            
-            ignore, frame = cap.read()
-            frame = cv2.resize(frame, points,fx=0.5, fy=0.5,interpolation=cv2.INTER_AREA)
-            frameRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            results = pose.process(frameRGB)
-
-            landMarks=[]
-            if results.pose_landmarks != None:
-                mpDraw.draw_landmarks(frame, results.pose_landmarks, mp.solutions.pose.POSE_CONNECTIONS)
-                for lm in results.pose_landmarks.landmark:
-                    #print((lm.x, lm.y))
-                    landMarks.append((int(lm.x*width),int(lm.y*height)))
-                
-                cv2.circle(frame, landMarks[16], handRadius, handColor, handThickness)
-                cv2.circle(frame, landMarks[20], handRadius, handColor, handThickness)
-                cv2.circle(frame, landMarks[15], handRadius, handColor, handThickness)
-                cv2.circle(frame, landMarks[19], handRadius, handColor, handThickness)
-
-                self.cordsr = [landMarks[16], landMarks[20]] 
-                self.cordsl = [landMarks[15], landMarks[19]]
-
-                #Line connecting left_elbow to left_wrist 
-                cv2.line(frame,landMarks[13],landMarks[15],(255,0,0),handThickness)
-
-                #Line connecting left_wrist to left_index
-                cv2.line(frame,landMarks[15],landMarks[19],(255,0,0),handThickness)
-                                
-                #Line connecting right_elbow to right_wrist 
-                cv2.line(frame,landMarks[14],landMarks[16],(255,0,0),handThickness)
-
-                #Line connecting right_elbow to right_wrist 
-                cv2.line(frame,landMarks[16],landMarks[20],(255,0,0),handThickness)
-
-        
-
-            '''cap.grab()
+            cap.grab()
             if n == 4:  # read every 4th frame
                 success, im = cap.retrieve()
                 self.imgs[index] = im if success else self.imgs[index] * 0
                 n = 0
-            '''
-            self.imgs[index] = frame
             time.sleep(1 / self.fps)  # wait time
 
     def __iter__(self):
@@ -391,7 +338,7 @@ class LoadStreams:  # multiple IP or RTSP cameras
         img = img[:, :, :, ::-1].transpose(0, 3, 1, 2)  # BGR to RGB, to bsx3x416x416
         img = np.ascontiguousarray(img)
 
-        return self.sources, img, img0, None, self.cordsr, self.cordsl
+        return self.sources, img, img0, None
 
     def __len__(self):
         return 0  # 1E12 frames = 32 streams at 30 FPS for 30 years

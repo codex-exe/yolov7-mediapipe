@@ -21,6 +21,12 @@ tensorboard>=2.4.1
 pandas>=1.1.4
 seaborn>=0.11.0
 
+# Mediapipe -----------------------------------
+absl-py
+attrs>=19.1.0
+flatbuffers>=2.0
+opencv-contrib-python
+
 # Export --------------------------------------
 # coremltools>=4.1  # CoreML export
 # onnx>=1.9.0  # ONNX export
