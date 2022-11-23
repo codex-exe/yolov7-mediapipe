@@ -27,6 +27,11 @@ attrs>=19.1.0
 flatbuffers>=2.0
 opencv-contrib-python
 
+# Voice
+sounddevice
+vosk
+pyaudio
+
 # Export --------------------------------------
 # coremltools>=4.1  # CoreML export
 # onnx>=1.9.0  # ONNX export
