@@ -8,7 +8,8 @@ A zip file can be downloaded directly or use git clone https://github.com/codex-
 
 Step 2: Install all the requirements
 pip install -r requirements.txt
-(version issues can occur, refer to the latest official yolov7 and mediapipe for dependencies)
+(version issues can occur, refer to the latest official vosk(offline), yolov7 and mediapipe for dependencies)
+https://github.com/alphacep/vosk-api
 https://github.com/google/mediapipe
 https://github.com/WongKinYiu/yolov7
 
