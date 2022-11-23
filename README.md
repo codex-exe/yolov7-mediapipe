@@ -3,11 +3,13 @@
 It is preferable to use a virtual environment:
 refer - https://www.geeksforgeeks.org/creating-python-virtual-environment-windows-linux/
 
+
 Step 1: Download all the contents of the repository
 
 A zip file can be downloaded directly or 
 
 use git clone https://github.com/codex-exe/yolov7-mediapipe.git
+
 
 Step 2: Install all the requirements
 
