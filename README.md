@@ -24,3 +24,5 @@ https://github.com/google/mediapipe
 
 https://github.com/WongKinYiu/yolov7
 
+
+Step 3: Run detect.py for the main code
