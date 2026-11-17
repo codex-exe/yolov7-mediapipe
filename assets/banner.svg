@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" width="1200" height="320" role="img" aria-label="Smart Home Interactions: Point at a device and say what you want. No app, no remote.">
+<title>Smart Home Interactions: Point at a device and say what you want. No app, no remote.</title>
+<defs>
+<radialGradient id="glow" cx="82%" cy="18%" r="70%"><stop offset="0" stop-color="#fbbf24" stop-opacity=".20"/><stop offset="1" stop-color="#fbbf24" stop-opacity="0"/></radialGradient>
+<clipPath id="card"><rect width="1200" height="320" rx="20"/></clipPath>
+
+</defs>
+<style>
+text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif}
+.mono{font-family:ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,'Liberation Mono',monospace}
+
+.ray{animation:ray 5s linear infinite}
+@keyframes ray{0%{stroke-dashoffset:210;opacity:0}8%{opacity:1}30%,90%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:0;opacity:0}}
+.dbox{animation:dbox 5s linear infinite}
+@keyframes dbox{0%,29%{stroke:#5b6b86}32%,90%{stroke:#fbbf24}100%{stroke:#5b6b86}}
+.dtag{animation:dtag 5s linear infinite}
+@keyframes dtag{0%,29%{fill:#5b6b86}32%,90%{fill:#fbbf24}100%{fill:#5b6b86}}
+.bulb{animation:bulb 5s linear infinite}
+@keyframes bulb{0%,44%{fill:#101a2e;stroke:#8b9bb4}48%,90%{fill:#fde68a;stroke:#fde68a}100%{fill:#101a2e;stroke:#8b9bb4}}
+.halo{animation:halo 5s linear infinite}
+@keyframes halo{0%,44%{opacity:0}48%,90%{opacity:.22}100%{opacity:0}}
+.req{animation:req 5s linear infinite}
+@keyframes req{0%,40%{opacity:0}46%,90%{opacity:1}100%{opacity:0}}
+.bar{transform-box:fill-box;transform-origin:center;animation:bar 1s ease-in-out infinite}
+@keyframes bar{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+<g clip-path="url(#card)">
+<rect width="1200" height="320" fill="#0b1220"/>
+
+<rect width="1200" height="320" fill="url(#glow)"/>
+
+<text x="56" y="62" font-size="15" letter-spacing="2.5" fill="#fbbf24" class="mono">HUMAN-ROBOT INTERACTION</text>
+<text x="56" y="122" font-size="42" font-weight="800" fill="#e6edf3" letter-spacing="-1">Smart Home Interactions</text>
+<text x="56" y="168" font-size="21" fill="#8b9bb4">Point at a device and say what you</text><text x="56" y="198" font-size="21" fill="#8b9bb4">want. No app, no remote.</text>
+<rect x="56" y="244" width="80" height="30" rx="15.0" fill="#fbbf24" fill-opacity=".10" stroke="#fbbf24" stroke-opacity=".45"/><text x="96.0" y="263.5" font-size="15" fill="#fbbf24" text-anchor="middle" class="mono" textLength="54" lengthAdjust="spacingAndGlyphs">yolov7</text><rect x="146" y="244" width="107" height="30" rx="15.0" fill="#fbbf24" fill-opacity=".10" stroke="#fbbf24" stroke-opacity=".45"/><text x="199.5" y="263.5" font-size="15" fill="#fbbf24" text-anchor="middle" class="mono" textLength="81" lengthAdjust="spacingAndGlyphs">mediapipe</text><rect x="263" y="244" width="62" height="30" rx="15.0" fill="#fbbf24" fill-opacity=".10" stroke="#fbbf24" stroke-opacity=".45"/><text x="294.0" y="263.5" font-size="15" fill="#fbbf24" text-anchor="middle" class="mono" textLength="36" lengthAdjust="spacingAndGlyphs">vosk</text><rect x="335" y="244" width="89" height="30" rx="15.0" fill="#fbbf24" fill-opacity=".10" stroke="#fbbf24" stroke-opacity=".45"/><text x="379.5" y="263.5" font-size="15" fill="#fbbf24" text-anchor="middle" class="mono" textLength="63" lengthAdjust="spacingAndGlyphs">nodemcu</text>
+<g transform="translate(640,40)"><circle cx="74" cy="64" r="16" fill="none" stroke="#8b9bb4" stroke-width="3"/><path d="M74,80 V160 M74,160 L54,214 M74,160 L96,214 M74,100 L52,146" fill="none" stroke="#8b9bb4" stroke-width="3" stroke-linecap="round"/><path d="M74,100 L112,114 L150,104 L172,99.6" fill="none" stroke="#22d3ee" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="74" cy="100" r="4.5" fill="#0b1220" stroke="#22d3ee" stroke-width="2.5"/><circle cx="112" cy="114" r="4.5" fill="#0b1220" stroke="#22d3ee" stroke-width="2.5"/><circle cx="150" cy="104" r="4.5" fill="#0b1220" stroke="#22d3ee" stroke-width="2.5"/><circle cx="172" cy="99.6" r="4.5" fill="#0b1220" stroke="#22d3ee" stroke-width="2.5"/><path class="ray" d="M172,99.6 L372,59.6" stroke="#fbbf24" stroke-width="2.5" stroke-dasharray="6 7" fill="none"/><rect class="dbox" x="372" y="22" width="112" height="120" rx="6" fill="none" stroke="#5b6b86" stroke-width="2.5"/><rect class="dtag" x="372" y="4" width="78" height="18" rx="3" fill="#5b6b86"/><text x="378" y="17" font-size="11.5" font-weight="700" fill="#0b1220" class="mono">lamp 0.91</text><circle class="halo" cx="428" cy="70" r="40" fill="#fbbf24"/><path class="bulb" d="M428,44 a24,24 0 0 1 14,43 v9 h-28 v-9 a24,24 0 0 1 14,-43 z" fill="#101a2e" stroke="#8b9bb4" stroke-width="2.5"/><path d="M416,104 h24 M419,112 h18" stroke="#8b9bb4" stroke-width="2.5" stroke-linecap="round"/><text class="req mono" x="428" y="166" font-size="12.5" fill="#fbbf24" text-anchor="middle">GET /LED=ON</text><rect x="150" y="170" width="150" height="46" rx="23" fill="#101a2e" stroke="#22304d" stroke-width="1.5"/><rect class="bar" style="animation-delay:0.0s" x="170" y="183" width="4" height="20" rx="2" fill="#fbbf24"/><rect class="bar" style="animation-delay:0.12s" x="179" y="183" width="4" height="20" rx="2" fill="#fbbf24"/><rect class="bar" style="animation-delay:0.24s" x="188" y="183" width="4" height="20" rx="2" fill="#fbbf24"/><rect class="bar" style="animation-delay:0.36s" x="197" y="183" width="4" height="20" rx="2" fill="#fbbf24"/><rect class="bar" style="animation-delay:0.48s" x="206" y="183" width="4" height="20" rx="2" fill="#fbbf24"/><rect class="bar" style="animation-delay:0.6s" x="215" y="183" width="4" height="20" rx="2" fill="#fbbf24"/><rect class="bar" style="animation-delay:0.72s" x="224" y="183" width="4" height="20" rx="2" fill="#fbbf24"/><text x="242" y="199" font-size="15" fill="#e6edf3" class="mono">"on"</text></g>
+
+</g>
+<rect x=".5" y=".5" width="1199" height="319" rx="20" fill="none" stroke="#22304d"/>
+</svg>
